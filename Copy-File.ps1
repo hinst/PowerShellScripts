@@ -1,9 +1,29 @@
 ﻿function Copy-File {
     param([string]$from, [string]$to)
-    $ffile = [io.file]::OpenRead($from)
-    $tofile = [io.file]::OpenWrite($to)
+	trap
+	{
+	  Write-Error "While opening source file"
+	  Write-Host "File: '$from':"
+	  Write-Error "Error: $_"
+	  Break
+	}
+	$ffile = [io.file]::OpenRead($from)
+	trap 
+	{
+		Write-Error "While opening destination file:"
+		Write-Error "  '$to':"
+		Write-Error "$_"
+		Break
+	}
+	$tofile = [io.file]::OpenWrite($to)
+	trap
+	{
+		Write-Error "While copying files:"
+		Write-Error "  '$from' to '$to':"
+		Write-Error "$_"
+		Break
+	}
     Write-Progress -Activity "Copying file" -status "$from -> $to" -PercentComplete 0
-	
     [byte[]]$buff = new-object byte[] 1048576
     [int]$total = [int]$count = 0
     do {
