@@ -39,6 +39,7 @@ function Deploy-FileTemp
 				Continue
 			}
 			Copy-File $temp_file_path $destination_file_path
+			Remove-Item $temp_file_path -ea stop
 		}
 	}
 	else
